@@ -29,7 +29,7 @@ export interface AxisDefinition {
 export interface Character {
   id: string;
   name: string;
-  shortName?: string; // カプ略称・2文字表記（未設定時は名前の上2文字）
+  shortName?: string; // カプ略称・2〜3文字表記（最大3文字。未設定時は名前の上2文字）
   color: string; // Hex color
   avatarUrl?: string;
   scores: Record<string, StageLevel>; // axisId -> 1..5

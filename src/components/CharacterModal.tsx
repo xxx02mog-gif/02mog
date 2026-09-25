@@ -94,7 +94,7 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
   };
 
   const handleShortNameChange = (val: string) => {
-    setShortName(val);
+    setShortName(val.slice(0, 3));
     setIsShortNameCustomized(true);
   };
 
@@ -131,7 +131,7 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
     }
 
     const finalShort =
-      shortName.trim() || name.trim().replace(/\s+/g, '').slice(0, 2);
+      (shortName.trim() || name.trim().replace(/\s+/g, '').slice(0, 2)).slice(0, 3);
 
     const charToSave: Character = {
       id: initialCharacter ? initialCharacter.id : `char-${Date.now()}`,
@@ -283,16 +283,16 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
                     className={`block text-[11px] font-semibold mb-1 truncate ${
                       isDark ? 'text-zinc-300' : 'text-stone-700'
                     }`}
-                    title="カプ名の2文字（例: サ１）。未入力なら名前の上2文字を使用"
+                    title="カプ名の略称（最大3文字。未入力なら名前の上2文字を使用）"
                   >
-                    略称 (2文字)
+                    略称
                   </label>
                   <input
                     type="text"
                     value={shortName}
                     onChange={(e) => handleShortNameChange(e.target.value)}
                     placeholder="サ１"
-                    maxLength={4}
+                    maxLength={3}
                     className={`w-full min-w-0 px-1.5 sm:px-2 py-1.5 rounded border focus:outline-hidden focus:border-indigo-500 text-xs font-bold text-center ${
                       isDark
                         ? 'bg-zinc-950 border-zinc-700 text-zinc-100 placeholder-zinc-600'

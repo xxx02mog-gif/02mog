@@ -16,14 +16,22 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
   className = '',
 }) => {
   const sizeClasses = {
-    sm: 'w-7 h-7 text-xs',
-    md: 'w-9 h-9 text-xs font-semibold',
-    lg: 'w-12 h-12 text-sm font-bold',
-    xl: 'w-16 h-16 text-base font-bold',
+    sm: 'w-7 h-7',
+    md: 'w-9 h-9',
+    lg: 'w-12 h-12',
+    xl: 'w-16 h-16',
   };
 
   const textColor = getContrastTextColor(character.color);
   const displayName = getCharacterShortName(character);
+  const charCount = [...displayName].length;
+
+  const fontClasses = {
+    sm: charCount >= 3 ? 'text-[7.5px] tracking-[-0.06em]' : charCount === 2 ? 'text-[10px] tracking-tighter' : 'text-xs',
+    md: charCount >= 3 ? 'text-[9.5px] tracking-tight' : 'text-xs font-semibold',
+    lg: charCount >= 3 ? 'text-[11.5px] tracking-tight' : 'text-sm font-bold',
+    xl: charCount >= 3 ? 'text-[13.5px] tracking-tight' : 'text-base font-bold',
+  };
 
   return (
     <div
@@ -47,7 +55,10 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
           }}
         />
       ) : (
-        <span style={{ color: textColor }} className="font-bold tracking-tighter">
+        <span
+          style={{ color: textColor }}
+          className={`font-bold leading-none whitespace-nowrap text-center flex items-center justify-center max-w-full px-0.5 ${fontClasses[size]}`}
+        >
           {displayName}
         </span>
       )}

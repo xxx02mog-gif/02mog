@@ -122,11 +122,11 @@ export function getContrastTextColor(hexColor: string): string {
 }
 
 /**
- * Extract initials or 2-char short name
+ * Extract initials or 2-3 char short name (max 3 characters)
  */
 export function getCharacterShortName(character: { name: string; shortName?: string }): string {
   if (character.shortName && character.shortName.trim()) {
-    return character.shortName.trim();
+    return character.shortName.trim().slice(0, 3);
   }
   const cleanName = character.name.replace(/\s+/g, '');
   return cleanName.slice(0, 2) || '?';
