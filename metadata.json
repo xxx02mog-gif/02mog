@@ -1,0 +1,6 @@
+{
+  "name": "SEME & UKE POSITION MAP",
+  "description": "攻め受けの属性やポジションを可視化・整理・画像保存できるポジションマップツール",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
