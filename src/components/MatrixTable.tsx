@@ -83,7 +83,7 @@ export const MatrixTable: React.FC<MatrixTableProps> = ({
                 ? 'grid grid-cols-2 gap-4 max-w-2xl mx-auto w-full justify-center'
                 : 'grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl sm:max-w-3xl mx-auto w-full justify-center'
               : isExportView
-              ? 'grid grid-cols-2 md:grid-cols-3 gap-4 w-full'
+              ? 'grid grid-cols-3 gap-4 w-full'
               : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full'
           }
         >

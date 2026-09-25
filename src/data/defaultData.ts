@@ -46,9 +46,8 @@ export const DEFAULT_CHARACTERS: Character[] = [
       self: 3, // 中間
       others: 5, // 受け
     },
-    isSpecial: true,
-    specialNote: 'サンプル１の前でのみ受け化',
-    specialAxes: ['others'],
+    isSpecial: false,
+    specialNote: '',
     excludeFromStandardMap: false,
   },
   {
@@ -69,9 +68,9 @@ export const DEFAULT_CHARACTERS: Character[] = [
 
 export const DEFAULT_PROJECT: MapProject = {
   title: '攻め受け分類',
-  creator: '@creator',
+  creator: '',
   note: '',
-  updatedAt: new Date().toISOString().split('T')[0],
+  updatedAt: '',
   themeMode: 'dark',
   baseColor: '#121214', // 背景色: 青みのない低彩度ニュートラルダーク
   cardColor: '#18181b', // カード色

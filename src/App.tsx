@@ -31,8 +31,20 @@ export default function App() {
           if (parsed.title === '攻め受け属性スペクトラム') {
             parsed.title = '攻め受け分類';
           }
+          if (
+            parsed.creator === '@creator' ||
+            parsed.creator === '@Creator' ||
+            parsed.creator?.toLowerCase() === '@creator'
+          ) {
+            parsed.creator = '';
+          }
           parsed.axes = parsed.axes.map((a: any) =>
             a.name === '他人' ? { ...a, name: '他認' } : a
+          );
+          parsed.characters = parsed.characters.map((c: any) =>
+            c.specialNote === 'サンプル１の前でのみ受け化'
+              ? { ...c, specialNote: '', isSpecial: false, specialAxes: [] }
+              : c
           );
           return parsed;
         }

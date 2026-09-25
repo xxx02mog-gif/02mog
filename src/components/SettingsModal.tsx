@@ -21,6 +21,8 @@ import {
   Sun,
   Moon,
   ChevronDown,
+  ChevronUp,
+  GripVertical,
   HelpCircle,
 } from 'lucide-react';
 
@@ -63,6 +65,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [newRightLabel, setNewRightLabel] = useState('受け');
   const [newIncludeInOverall, setNewIncludeInOverall] = useState(true);
   const [statusMsg, setStatusMsg] = useState('');
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   // Confirmation states (in-app, no window.confirm)
   const [confirmReset, setConfirmReset] = useState(false);
@@ -135,6 +138,35 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     setAxes((prev) => prev.filter((a) => a.id !== id));
   };
 
+  const handleMoveAxis = (index: number, direction: 'up' | 'down') => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= axes.length) return;
+    const newAxes = [...axes];
+    const [moved] = newAxes.splice(index, 1);
+    newAxes.splice(targetIndex, 0, moved);
+    setAxes(newAxes);
+  };
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (index: number) => {
+    if (draggedIndex === null || draggedIndex === index) {
+      setDraggedIndex(null);
+      return;
+    }
+    const newAxes = [...axes];
+    const [moved] = newAxes.splice(draggedIndex, 1);
+    newAxes.splice(index, 0, moved);
+    setAxes(newAxes);
+    setDraggedIndex(null);
+  };
+
   const handleSaveAll = () => {
     const updatedDark = previewScheme.isDark;
     onUpdateProject({
@@ -144,7 +176,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       baseColor,
       cardColor,
       axes,
-      updatedAt: new Date().toISOString().split('T')[0],
+      updatedAt: '',
     });
     onClose();
   };
@@ -239,7 +271,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 space-y-6 overflow-y-auto text-xs flex-1">
+        <div className="p-4 sm:p-5 space-y-5 sm:space-y-6 overflow-y-auto text-xs flex-1">
           {statusMsg && (
             <div
               className={`p-2.5 rounded-lg border flex items-center gap-2 ${
@@ -298,7 +330,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   type="text"
                   value={creator}
                   onChange={(e) => setCreator(e.target.value)}
-                  placeholder="@creator"
+                  placeholder="未設定（お名前やIDを自由に入力）"
                   className="w-full px-3 py-1.5 rounded border focus:outline-hidden text-xs transition-colors"
                   style={{
                     backgroundColor: isDark ? '#09090b' : '#fafafa',
@@ -373,16 +405,61 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
             {/* Existing axes */}
             <div className="space-y-2">
-              {axes.map((axis) => (
+              {axes.map((axis, index) => (
                 <div
                   key={axis.id}
-                  className="p-2.5 rounded-lg border space-y-2 transition-colors"
+                  draggable
+                  onDragStart={() => handleDragStart(index)}
+                  onDragOver={handleDragOver}
+                  onDrop={() => handleDrop(index)}
+                  className={`p-2.5 rounded-lg border space-y-2 transition-all ${
+                    draggedIndex === index ? 'opacity-40 border-dashed border-indigo-400' : ''
+                  }`}
                   style={{
                     backgroundColor: isDark ? '#09090b' : '#fafafa',
-                    borderColor: isDark ? '#27272a' : '#e4e4e7',
+                    borderColor: draggedIndex === index ? undefined : isDark ? '#27272a' : '#e4e4e7',
                   }}
                 >
                   <div className="flex items-center justify-between gap-2">
+                    {/* 並び替えコントローラー（▲▼ボタン & 番号 & ドラッグアイコン） */}
+                    <div className="flex items-center gap-1 shrink-0">
+                      <div className="flex flex-col -space-y-0.5">
+                        <button
+                          type="button"
+                          onClick={() => handleMoveAxis(index, 'up')}
+                          disabled={index === 0}
+                          className="p-0.5 rounded transition-colors hover:bg-zinc-500/20 disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed"
+                          style={{ color: isDark ? '#d4d4d8' : '#52525b' }}
+                          title="上へ移動"
+                        >
+                          <ChevronUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleMoveAxis(index, 'down')}
+                          disabled={index === axes.length - 1}
+                          className="p-0.5 rounded transition-colors hover:bg-zinc-500/20 disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed"
+                          style={{ color: isDark ? '#d4d4d8' : '#52525b' }}
+                          title="下へ移動"
+                        >
+                          <ChevronDown className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                      <span
+                        className="text-[10px] font-mono w-3.5 text-center select-none"
+                        style={{ color: isDark ? '#71717a' : '#a1a1aa' }}
+                        title="ドラッグ＆ドロップでも並び替え可能"
+                      >
+                        {index + 1}
+                      </span>
+                      <span title="ドラッグして並び替え" className="flex items-center">
+                        <GripVertical
+                          className="w-3.5 h-3.5 cursor-grab active:cursor-grabbing opacity-40 hover:opacity-100 transition-opacity"
+                          style={{ color: isDark ? '#a1a1aa' : '#71717a' }}
+                        />
+                      </span>
+                    </div>
+
                     <input
                       type="text"
                       value={axis.name}
@@ -390,14 +467,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         handleUpdateAxis(axis.id, 'name', e.target.value)
                       }
                       placeholder="軸名"
-                      className="flex-1 px-2.5 py-1 text-xs font-bold rounded border focus:outline-hidden"
+                      className="flex-1 min-w-0 px-2.5 py-1 text-xs font-bold rounded border focus:outline-hidden"
                       style={{
                         backgroundColor: isDark ? '#18181b' : '#ffffff',
                         borderColor: isDark ? '#27272a' : '#d4d4d8',
                         color: isDark ? '#fafafa' : '#18181b',
                       }}
                     />
-                    <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
                       {/* 総合評価に加えるか切り替えるボタン */}
                       <button
                         type="button"
@@ -408,7 +485,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                             axis.includeInOverall === false ? true : false
                           )
                         }
-                        className="px-2 py-1 text-[11px] font-semibold rounded border transition-colors"
+                        className="px-1.5 sm:px-2 py-1 text-[10px] sm:text-[11px] font-semibold rounded border transition-colors whitespace-nowrap cursor-pointer"
                         style={{
                           backgroundColor:
                             axis.includeInOverall !== false
@@ -504,7 +581,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 borderColor: isDark ? '#27272a' : '#e4e4e7',
               }}
             >
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-1.5 sm:gap-2">
                 <input
                   type="text"
                   value={newAxisName}
@@ -513,18 +590,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     if (e.key === 'Enter') handleAddAxis();
                   }}
                   placeholder="新しい軸名"
-                  className="flex-1 px-2.5 py-1 text-xs font-bold rounded border focus:outline-hidden"
+                  className="flex-1 min-w-0 px-2 sm:px-2.5 py-1 text-xs font-bold rounded border focus:outline-hidden"
                   style={{
                     backgroundColor: isDark ? '#18181b' : '#ffffff',
                     borderColor: isDark ? '#27272a' : '#d4d4d8',
                     color: isDark ? '#fafafa' : '#18181b',
                   }}
                 />
-                <div className="flex items-center gap-1.5 shrink-0">
+                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
                   <button
                     type="button"
                     onClick={() => setNewIncludeInOverall(!newIncludeInOverall)}
-                    className="px-2 py-1 text-[11px] font-semibold rounded border transition-colors"
+                    className="px-1.5 sm:px-2 py-1 text-[10px] sm:text-[11px] font-semibold rounded border transition-colors whitespace-nowrap cursor-pointer"
                     style={{
                       backgroundColor: newIncludeInOverall
                         ? previewScheme.accent
@@ -555,7 +632,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     type="button"
                     onClick={() => handleAddAxis()}
                     disabled={!newAxisName.trim()}
-                    className="px-2.5 py-1 text-[11px] font-bold rounded border flex items-center gap-1 transition-colors disabled:opacity-40"
+                    className="px-2 sm:px-2.5 py-1 text-[10px] sm:text-[11px] font-bold rounded border flex items-center gap-0.5 sm:gap-1 transition-colors disabled:opacity-40 shrink-0 whitespace-nowrap cursor-pointer"
                     style={{
                       backgroundColor: previewScheme.accent,
                       borderColor: previewScheme.accent,
@@ -564,7 +641,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     title="軸を追加"
                   >
                     <Plus className="w-3.5 h-3.5" />
-                    追加
+                    <span>追加</span>
                   </button>
                 </div>
               </div>

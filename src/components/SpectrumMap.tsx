@@ -69,12 +69,14 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
   return (
     <div
       id="spectrum-map-card"
-      className="w-full rounded-xl border p-4 sm:p-6 transition-colors duration-200 shadow-md"
+      className={`rounded-xl border transition-colors duration-200 shadow-md ${
+        isExportView ? 'w-[800px] p-6' : 'w-full p-3.5 sm:p-6'
+      }`}
       style={{
         backgroundColor: scheme.cardBg,
         borderColor: scheme.borderColor,
         color: scheme.textPrimary,
-        minWidth: isExportView ? '680px' : 'auto',
+        minWidth: isExportView ? '800px' : 'auto',
       }}
     >
       {/* Title Header */}
@@ -83,36 +85,37 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
         style={{ borderColor: scheme.borderSubtle }}
       >
         <div className="min-w-0">
-          <h2 className="text-lg sm:text-xl font-bold tracking-tight">
+          <h2
+            className={`font-bold tracking-tight ${
+              isExportView ? 'text-xl' : 'text-lg sm:text-xl'
+            }`}
+          >
             {project.title || '攻め受け分類'}
           </h2>
         </div>
 
-        {(project.creator || project.updatedAt) && (
+        {project.creator && (
           <div
-            className="flex items-center gap-2 text-xs shrink-0 pb-0.5"
+            className="flex items-center text-xs shrink-0 pb-0.5"
             style={{ color: scheme.textMuted }}
           >
-            {project.creator && (
-              <span className="font-medium">
-                {project.creator.startsWith('@') ? project.creator : `@${project.creator}`}
-              </span>
-            )}
-            {project.creator && project.updatedAt && <span aria-hidden="true">·</span>}
-            {project.updatedAt && <span>{project.updatedAt}</span>}
+            <span className="font-medium">
+              {project.creator}
+            </span>
           </div>
         )}
       </div>
 
       {/* SPECTRUM CONTAINER */}
-      <div className="mt-4 space-y-4 sm:space-y-6">
+      <div className={`mt-4 ${isExportView ? 'space-y-6' : 'space-y-3 sm:space-y-6'}`}>
         {/* 1. TOP MAIN OVERALL SPECTRUM (総合軸) */}
-        <div className="pt-3.5 pb-2">
-          <div className="flex items-center gap-2 sm:gap-3">
+        <div className="pt-2 sm:pt-3.5 pb-2">
+          {/* Desktop & Image Export View */}
+          <div className={`${isExportView ? 'flex' : 'hidden sm:flex'} items-center gap-3`}>
             {/* Axis Name Column: 総合 */}
-            <div className="w-14 sm:w-20 shrink-0 text-right">
+            <div className="w-20 shrink-0 text-right">
               <span
-                className="font-bold text-xs sm:text-sm truncate block leading-tight"
+                className="font-bold truncate block leading-tight text-sm"
                 style={{ color: scheme.textPrimary }}
               >
                 総合
@@ -121,14 +124,14 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
 
             {/* Left Label: 攻め */}
             <span
-              className="w-8 sm:w-10 text-right shrink-0 text-xs sm:text-sm font-bold truncate"
+              className="w-10 text-sm text-right shrink-0 font-bold truncate"
               style={{ color: scheme.textSecondary }}
             >
               {defaultLeft}
             </span>
 
             {/* Main Spectrum Track Area */}
-            <div className="flex-1 px-4 sm:px-6">
+            <div className="flex-1 px-6">
               <div className="relative w-full h-10 flex items-center">
                 {/* Slim Bar Track */}
                 <div
@@ -151,63 +154,155 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
                 ))}
 
                 {/* Plotted Characters */}
-                {clusteredOverall.map((cluster, cIdx) => {
-                  return (
-                    <div
-                      key={`cluster-${cIdx}`}
-                      className="absolute top-1/2 flex items-center z-20"
-                      style={{
-                        left: `${cluster.pct}%`,
-                        transform: 'translate(-50%, -50%)',
-                      }}
-                    >
-                      {/* Avatars placed side by side with gap if clustered */}
-                      <div className="flex items-center gap-1.5">
-                        {cluster.chars.map((char) => {
-                          const hasSpecialNote = char.isSpecial && Boolean(char.specialNote);
+                {clusteredOverall.map((cluster, cIdx) => (
+                  <div
+                    key={`cluster-desk-${cIdx}`}
+                    className="absolute top-1/2 flex items-center z-20"
+                    style={{
+                      left: `${cluster.pct}%`,
+                      transform: 'translate(-50%, -50%)',
+                    }}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      {cluster.chars.map((char) => {
+                        const hasSpecialNote = char.isSpecial && Boolean(char.specialNote);
 
-                          return (
-                            <div
-                              key={char.id}
-                              className="relative cursor-pointer hover:scale-110 transition-transform"
-                              onClick={() => onEditCharacter && onEditCharacter(char)}
-                              title={`${char.name}${
-                                hasSpecialNote ? ` [特例: ${char.specialNote}]` : ''
-                              }`}
-                            >
-                              {/* Separated ✦ mark floating above the avatar */}
-                              {char.isSpecial && (
-                                <span className="absolute bottom-full mb-1.5 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
-                                  <SparkleIcon
-                                    color={char.color}
-                                    size={12}
-                                    withBorder={false}
-                                  />
-                                </span>
-                              )}
-
-                              <CharacterAvatar character={char} size="sm" />
-                            </div>
-                          );
-                        })}
-                      </div>
+                        return (
+                          <div
+                            key={char.id}
+                            className="relative cursor-pointer hover:scale-110 transition-transform"
+                            onClick={() => onEditCharacter && onEditCharacter(char)}
+                            title={`${char.name}${
+                              hasSpecialNote ? ` [特例: ${char.specialNote}]` : ''
+                            }`}
+                          >
+                            {char.isSpecial && (
+                              <span className="absolute bottom-full mb-1.5 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
+                                <SparkleIcon
+                                  color={char.color}
+                                  size={12}
+                                  withBorder={false}
+                                />
+                              </span>
+                            )}
+                            <CharacterAvatar character={char} size="sm" />
+                          </div>
+                        );
+                      })}
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* Right Label: 受け */}
             <span
-              className="w-8 sm:w-10 text-left shrink-0 text-xs sm:text-sm font-bold truncate"
+              className="w-10 text-sm text-left shrink-0 font-bold truncate"
               style={{ color: scheme.textSecondary }}
             >
               {defaultRight}
             </span>
 
             {/* Symmetrical Right Spacer to ensure Track is centered with items */}
-            <div className="w-14 sm:w-20 shrink-0" aria-hidden="true" />
+            <div className="w-20 shrink-0" aria-hidden="true" />
           </div>
+
+          {/* Mobile Screen View: 完全対称・余白最小化レイアウト */}
+          {!isExportView && (
+            <div className="sm:hidden space-y-1">
+              <div className="px-0.5 flex items-center justify-between">
+                <span
+                  className="font-bold text-xs"
+                  style={{ color: scheme.textPrimary }}
+                >
+                  総合
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 py-0.5">
+                {/* Left Label: 攻め */}
+                <span
+                  className="text-xs font-bold shrink-0 text-right min-w-[28px] truncate"
+                  style={{ color: scheme.textSecondary }}
+                >
+                  {defaultLeft}
+                </span>
+
+                {/* Main Spectrum Track Area */}
+                <div className="flex-1 px-1">
+                  <div className="relative w-full h-8 flex items-center">
+                    {/* Slim Bar Track */}
+                    <div
+                      className="absolute inset-y-0 my-auto -inset-x-1 h-1 rounded-full pointer-events-none"
+                      style={{ backgroundColor: scheme.trackBg }}
+                    />
+
+                    {/* 5 Dots: ・ ・ ・ ・ ・ inside the track */}
+                    {stages.map((lvl) => (
+                      <div
+                        key={lvl}
+                        className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none z-10"
+                        style={{ left: `${stageToPercent(lvl)}%` }}
+                      >
+                        <div
+                          className="w-1.5 h-1.5 rounded-full"
+                          style={{ backgroundColor: scheme.dotBg }}
+                        />
+                      </div>
+                    ))}
+
+                    {/* Plotted Characters */}
+                    {clusteredOverall.map((cluster, cIdx) => (
+                      <div
+                        key={`cluster-mob-${cIdx}`}
+                        className="absolute top-1/2 flex items-center z-20"
+                        style={{
+                          left: `${cluster.pct}%`,
+                          transform: 'translate(-50%, -50%)',
+                        }}
+                      >
+                        <div className="flex items-center gap-1">
+                          {cluster.chars.map((char) => {
+                            const hasSpecialNote = char.isSpecial && Boolean(char.specialNote);
+
+                            return (
+                              <div
+                                key={char.id}
+                                className="relative cursor-pointer hover:scale-110 transition-transform"
+                                onClick={() => onEditCharacter && onEditCharacter(char)}
+                                title={`${char.name}${
+                                  hasSpecialNote ? ` [特例: ${char.specialNote}]` : ''
+                                }`}
+                              >
+                                {char.isSpecial && (
+                                  <span className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
+                                    <SparkleIcon
+                                      color={char.color}
+                                      size={11}
+                                      withBorder={false}
+                                    />
+                                  </span>
+                                )}
+                                <CharacterAvatar character={char} size="sm" />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Right Label: 受け */}
+                <span
+                  className="text-xs font-bold shrink-0 text-left min-w-[28px] truncate"
+                  style={{ color: scheme.textSecondary }}
+                >
+                  {defaultRight}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Hairline Separator */}
@@ -217,7 +312,7 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
         />
 
         {/* 2. INDIVIDUAL ITEM AXES (各項目) */}
-        <div className="space-y-3 pt-1">
+        <div className="space-y-2.5 sm:space-y-3 pt-1">
           {project.axes.map((axis) => {
             const leftTxt = axis.leftLabel || '攻め';
             const rightTxt = axis.rightLabel || '受け';
@@ -237,124 +332,239 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
             });
 
             return (
-              <div
-                key={axis.id}
-                className="flex items-center gap-2 sm:gap-3 py-2 sm:py-2.5 group"
-              >
-                {/* Axis Name */}
-                <div className="w-14 sm:w-20 shrink-0 text-right">
-                  <span
-                    className="font-medium text-[10px] sm:text-[11px] truncate block leading-tight"
-                    style={{ color: scheme.textSecondary }}
-                    title={axis.name}
-                  >
-                    {axis.name}
-                  </span>
-                  {axis.includeInOverall === false && (
-                    <span
-                      className="text-[8px] sm:text-[9px] block leading-tight"
-                      style={{ color: scheme.textMuted }}
-                      title="総合軸の計算には含まれません"
-                    >
-                      （総合外）
-                    </span>
-                  )}
-                </div>
-
-                {/* Left Label for this axis */}
-                <span
-                  className="text-[10px] sm:text-xs w-8 sm:w-10 text-right shrink-0 truncate font-medium"
-                  style={{ color: scheme.textSecondary }}
+              <React.Fragment key={axis.id}>
+                {/* Desktop & Image Export View */}
+                <div
+                  className={`${isExportView ? 'flex' : 'hidden sm:flex'} items-center gap-3 py-2.5 group`}
                 >
-                  {leftTxt}
-                </span>
-
-                {/* Slim Track Container with perfect alignment */}
-                <div className="flex-1 px-4 sm:px-6">
-                  <div className="relative w-full h-6 flex items-center">
-                    {/* Slim Bar Track */}
-                    <div
-                      className="absolute inset-y-0 my-auto -inset-x-1 h-1 rounded-full pointer-events-none"
-                      style={{ backgroundColor: scheme.trackBg }}
-                    />
-
-                    {/* 5 Tick dots: ・ ・ ・ ・ ・ */}
-                    {stages.map((lvl) => (
-                      <div
-                        key={lvl}
-                        className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none z-10"
-                        style={{ left: `${stageToPercent(lvl)}%` }}
+                  {/* Axis Name */}
+                  <div className="w-20 shrink-0 text-right">
+                    <span
+                      className="font-medium truncate block leading-tight text-[11px]"
+                      style={{ color: scheme.textSecondary }}
+                      title={axis.name}
+                    >
+                      {axis.name}
+                    </span>
+                    {axis.includeInOverall === false && (
+                      <span
+                        className="block leading-tight text-[9px]"
+                        style={{ color: scheme.textMuted }}
+                        title="総合軸の計算には含まれません"
                       >
-                        <div
-                          className="w-1.5 h-1.5 rounded-full"
-                          style={{ backgroundColor: scheme.dotBg }}
-                        />
-                      </div>
-                    ))}
+                        （総合外）
+                      </span>
+                    )}
+                  </div>
 
-                    {/* Character markers: Color-Only Small Beads with gap */}
-                    {stages.map((lvl) => {
-                      const charsAtStage = grouped[lvl];
-                      if (charsAtStage.length === 0) return null;
-                      const pct = stageToPercent(lvl);
+                  {/* Left Label for this axis */}
+                  <span
+                    className="w-10 text-xs text-right shrink-0 truncate font-medium"
+                    style={{ color: scheme.textSecondary }}
+                  >
+                    {leftTxt}
+                  </span>
 
-                      return (
+                  {/* Slim Track Container with perfect alignment */}
+                  <div className="flex-1 px-6">
+                    <div className="relative w-full h-6 flex items-center">
+                      {/* Slim Bar Track */}
+                      <div
+                        className="absolute inset-y-0 my-auto -inset-x-1 h-1 rounded-full pointer-events-none"
+                        style={{ backgroundColor: scheme.trackBg }}
+                      />
+
+                      {/* 5 Tick dots: ・ ・ ・ ・ ・ */}
+                      {stages.map((lvl) => (
                         <div
                           key={lvl}
-                          className="absolute top-1/2 flex items-center gap-1 z-20"
-                          style={{
-                            left: `${pct}%`,
-                            transform: 'translate(-50%, -50%)',
-                          }}
+                          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none z-10"
+                          style={{ left: `${stageToPercent(lvl)}%` }}
                         >
-                          {charsAtStage.map((char) => {
-                            const isCharSpecialForAxis =
-                              char.isSpecial && Boolean(char.specialAxes?.includes(axis.id));
+                          <div
+                            className="w-1.5 h-1.5 rounded-full"
+                            style={{ backgroundColor: scheme.dotBg }}
+                          />
+                        </div>
+                      ))}
+
+                      {/* Character markers: Color-Only Small Beads with gap */}
+                      {stages.map((lvl) => {
+                        const charsAtStage = grouped[lvl];
+                        if (charsAtStage.length === 0) return null;
+                        const pct = stageToPercent(lvl);
+
+                        return (
+                          <div
+                            key={lvl}
+                            className="absolute top-1/2 flex items-center gap-1 z-20"
+                            style={{
+                              left: `${pct}%`,
+                              transform: 'translate(-50%, -50%)',
+                            }}
+                          >
+                            {charsAtStage.map((char) => {
+                              const isCharSpecialForAxis =
+                                char.isSpecial && Boolean(char.specialAxes?.includes(axis.id));
+
+                              return (
+                                <div
+                                  key={char.id}
+                                  className="relative cursor-pointer hover:scale-125 transition-transform"
+                                  onClick={() => onEditCharacter && onEditCharacter(char)}
+                                  title={`${char.name}: ${axis.name}`}
+                                >
+                                  {isCharSpecialForAxis && (
+                                    <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
+                                      <SparkleIcon
+                                        color={char.color}
+                                        size={11}
+                                        withBorder={false}
+                                      />
+                                    </div>
+                                  )}
+                                  <div
+                                    className="w-3.5 h-3.5 rounded-full"
+                                    style={{
+                                      backgroundColor: char.color,
+                                    }}
+                                  />
+                                </div>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Right Label for this axis */}
+                  <span
+                    className="w-10 text-xs text-left shrink-0 truncate font-medium"
+                    style={{ color: scheme.textSecondary }}
+                  >
+                    {rightTxt}
+                  </span>
+
+                  {/* Symmetrical Right Spacer to ensure Track is centered */}
+                  <div className="w-20 shrink-0" aria-hidden="true" />
+                </div>
+
+                {/* Mobile Screen View: 完全対称・余白最小化レイアウト */}
+                {!isExportView && (
+                  <div className="sm:hidden space-y-1 py-1">
+                    <div className="px-0.5 flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span
+                          className="font-semibold text-xs leading-tight"
+                          style={{ color: scheme.textPrimary }}
+                        >
+                          {axis.name}
+                        </span>
+                        {axis.includeInOverall === false && (
+                          <span
+                            className="text-[10px] leading-tight"
+                            style={{ color: scheme.textMuted }}
+                          >
+                            （総合外）
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 py-0.5">
+                      {/* Left Label */}
+                      <span
+                        className="text-[11px] font-medium shrink-0 text-right min-w-[28px] truncate"
+                        style={{ color: scheme.textSecondary }}
+                      >
+                        {leftTxt}
+                      </span>
+
+                      {/* Slim Track Container */}
+                      <div className="flex-1 px-1">
+                        <div className="relative w-full h-6 flex items-center">
+                          {/* Slim Bar Track */}
+                          <div
+                            className="absolute inset-y-0 my-auto -inset-x-1 h-1 rounded-full pointer-events-none"
+                            style={{ backgroundColor: scheme.trackBg }}
+                          />
+
+                          {/* 5 Tick dots: ・ ・ ・ ・ ・ */}
+                          {stages.map((lvl) => (
+                            <div
+                              key={lvl}
+                              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none z-10"
+                              style={{ left: `${stageToPercent(lvl)}%` }}
+                            >
+                              <div
+                                className="w-1.5 h-1.5 rounded-full"
+                                style={{ backgroundColor: scheme.dotBg }}
+                              />
+                            </div>
+                          ))}
+
+                          {/* Character markers */}
+                          {stages.map((lvl) => {
+                            const charsAtStage = grouped[lvl];
+                            if (charsAtStage.length === 0) return null;
+                            const pct = stageToPercent(lvl);
 
                             return (
                               <div
-                                key={char.id}
-                                className="relative cursor-pointer hover:scale-125 transition-transform"
-                                onClick={() => onEditCharacter && onEditCharacter(char)}
-                                title={`${char.name}: ${axis.name}`}
+                                key={lvl}
+                                className="absolute top-1/2 flex items-center gap-1 z-20"
+                                style={{
+                                  left: `${pct}%`,
+                                  transform: 'translate(-50%, -50%)',
+                                }}
                               >
-                                {/* Floating ✦ mark placed above the bead with matching character color */}
-                                {isCharSpecialForAxis && (
-                                  <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
-                                    <SparkleIcon
-                                      color={char.color}
-                                      size={11}
-                                      withBorder={false}
-                                    />
-                                  </div>
-                                )}
-                                {/* Color-only bead/dot */}
-                                <div
-                                  className="w-3.5 h-3.5 rounded-full shadow-xs"
-                                  style={{
-                                    backgroundColor: char.color,
-                                  }}
-                                />
+                                {charsAtStage.map((char) => {
+                                  const isCharSpecialForAxis =
+                                    char.isSpecial && Boolean(char.specialAxes?.includes(axis.id));
+
+                                  return (
+                                    <div
+                                      key={char.id}
+                                      className="relative cursor-pointer hover:scale-125 transition-transform"
+                                      onClick={() => onEditCharacter && onEditCharacter(char)}
+                                      title={`${char.name}: ${axis.name}`}
+                                    >
+                                      {isCharSpecialForAxis && (
+                                        <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
+                                          <SparkleIcon
+                                            color={char.color}
+                                            size={11}
+                                            withBorder={false}
+                                          />
+                                        </div>
+                                      )}
+                                      <div
+                                        className="w-3.5 h-3.5 rounded-full"
+                                        style={{
+                                          backgroundColor: char.color,
+                                        }}
+                                      />
+                                    </div>
+                                  );
+                                })}
                               </div>
                             );
                           })}
                         </div>
-                      );
-                    })}
+                      </div>
+
+                      {/* Right Label */}
+                      <span
+                        className="text-[11px] font-medium shrink-0 text-left min-w-[28px] truncate"
+                        style={{ color: scheme.textSecondary }}
+                      >
+                        {rightTxt}
+                      </span>
+                    </div>
                   </div>
-                </div>
-
-                {/* Right Label for this axis */}
-                <span
-                  className="text-[10px] sm:text-xs w-8 sm:w-10 text-left shrink-0 truncate font-medium"
-                  style={{ color: scheme.textSecondary }}
-                >
-                  {rightTxt}
-                </span>
-
-                {/* Symmetrical Right Spacer to ensure Track is centered */}
-                <div className="w-14 sm:w-20 shrink-0" aria-hidden="true" />
-              </div>
+                )}
+              </React.Fragment>
             );
           })}
         </div>

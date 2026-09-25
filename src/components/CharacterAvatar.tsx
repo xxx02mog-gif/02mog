@@ -27,9 +27,9 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
 
   return (
     <div
-      className={`relative inline-flex items-center justify-center rounded-full overflow-hidden shrink-0 select-none ${
+      className={`relative inline-flex items-center justify-center rounded-full overflow-hidden shrink-0 select-none box-border ${
         sizeClasses[size]
-      } ${showBorder ? 'ring-2 ring-white/80 shadow-xs' : ''} ${className}`}
+      } ${showBorder ? 'border-2 border-white/95' : ''} ${className}`}
       style={{
         backgroundColor: character.color || '#475569',
       }}
