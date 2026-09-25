@@ -310,7 +310,7 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
                 >
                   テーマカラー
                 </label>
-                <div className="flex items-center gap-1 sm:gap-1.5 py-1 flex-nowrap overflow-x-hidden">
+                <div className="flex items-center gap-1 sm:gap-1.5 py-1.5 px-0.5 flex-nowrap overflow-visible">
                   {COLOR_PALETTE.map((c) => (
                     <button
                       key={c}
@@ -418,7 +418,7 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
                     </div>
 
                     {/* 5-Dot Bar (個別表示・図表示と完全に同一のデザイン・目盛り線・ドット) */}
-                    <div className="flex items-center gap-1.5 py-0.5">
+                    <div className="flex items-center gap-1.5 pt-2.5 pb-1">
                       <span
                         className="text-[10px] w-7 shrink-0 text-right truncate font-medium"
                         style={{ color: scheme.textSecondary }}
@@ -453,10 +453,10 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
                                 {isSelected ? (
                                   <div className="relative flex items-center justify-center">
                                     {isSpecialForThisAxis && (
-                                      <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
+                                      <div className="absolute bottom-full mb-0.5 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
                                         <SparkleIcon
                                           color={color}
-                                          size={11}
+                                          size={10}
                                           withBorder={false}
                                         />
                                       </div>

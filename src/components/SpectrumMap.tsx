@@ -109,7 +109,7 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
       {/* SPECTRUM CONTAINER */}
       <div className={`mt-4 ${isExportView ? 'space-y-6' : 'space-y-3 sm:space-y-6'}`}>
         {/* 1. TOP MAIN OVERALL SPECTRUM (総合軸) */}
-        <div className="pt-2 sm:pt-3.5 pb-2">
+        <div className="pt-3 sm:pt-4 pb-2">
           {/* Desktop & Image Export View */}
           <div className={`${isExportView ? 'flex' : 'hidden sm:flex'} items-center gap-3`}>
             {/* Axis Name Column: 総合 */}
@@ -177,10 +177,10 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
                             }`}
                           >
                             {char.isSpecial && (
-                              <span className="absolute bottom-full mb-1.5 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
+                              <span className="absolute bottom-full mb-0.5 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
                                 <SparkleIcon
                                   color={char.color}
-                                  size={12}
+                                  size={11}
                                   withBorder={false}
                                 />
                               </span>
@@ -209,7 +209,7 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
 
           {/* Mobile Screen View: 完全対称・余白最小化レイアウト */}
           {!isExportView && (
-            <div className="sm:hidden space-y-1">
+            <div className="sm:hidden space-y-1 pb-1">
               <div className="px-0.5 flex items-center justify-between">
                 <span
                   className="font-bold text-xs"
@@ -219,7 +219,7 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
                 </span>
               </div>
 
-              <div className="flex items-center gap-2 py-0.5">
+              <div className="flex items-center gap-2 pt-3 pb-1">
                 {/* Left Label: 攻め */}
                 <span
                   className="text-xs font-bold shrink-0 text-right min-w-[28px] truncate"
@@ -275,7 +275,7 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
                                 }`}
                               >
                                 {char.isSpecial && (
-                                  <span className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
+                                  <span className="absolute bottom-full mb-0.5 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
                                     <SparkleIcon
                                       color={char.color}
                                       size={11}
@@ -335,7 +335,7 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
               <React.Fragment key={axis.id}>
                 {/* Desktop & Image Export View */}
                 <div
-                  className={`${isExportView ? 'flex' : 'hidden sm:flex'} items-center gap-3 py-2.5 group`}
+                  className={`${isExportView ? 'flex' : 'hidden sm:flex'} items-center gap-3 py-3 group`}
                 >
                   {/* Axis Name */}
                   <div className="w-20 shrink-0 text-right">
@@ -367,7 +367,7 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
 
                   {/* Slim Track Container with perfect alignment */}
                   <div className="flex-1 px-6">
-                    <div className="relative w-full h-6 flex items-center">
+                    <div className="relative w-full h-7 flex items-center">
                       {/* Slim Bar Track */}
                       <div
                         className="absolute inset-y-0 my-auto -inset-x-1 h-1 rounded-full pointer-events-none"
@@ -415,10 +415,10 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
                                   title={`${char.name}: ${axis.name}`}
                                 >
                                   {isCharSpecialForAxis && (
-                                    <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
+                                    <div className="absolute bottom-full mb-0.5 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
                                       <SparkleIcon
                                         color={char.color}
-                                        size={11}
+                                        size={10}
                                         withBorder={false}
                                       />
                                     </div>
@@ -452,7 +452,7 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
 
                 {/* Mobile Screen View: 完全対称・余白最小化レイアウト */}
                 {!isExportView && (
-                  <div className="sm:hidden space-y-1 py-1">
+                  <div className="sm:hidden space-y-1.5 py-1">
                     <div className="px-0.5 flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
                         <span
@@ -472,7 +472,7 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 py-0.5">
+                    <div className="flex items-center gap-2 pt-2.5 pb-1">
                       {/* Left Label */}
                       <span
                         className="text-[11px] font-medium shrink-0 text-right min-w-[28px] truncate"
@@ -531,10 +531,10 @@ export const SpectrumMap: React.FC<SpectrumMapProps> = ({
                                       title={`${char.name}: ${axis.name}`}
                                     >
                                       {isCharSpecialForAxis && (
-                                        <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
+                                        <div className="absolute bottom-full mb-0.5 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex items-center justify-center">
                                           <SparkleIcon
                                             color={char.color}
-                                            size={11}
+                                            size={10}
                                             withBorder={false}
                                           />
                                         </div>

@@ -26,13 +26,6 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
   const displayName = getCharacterShortName(character);
   const charCount = [...displayName].length;
 
-  const fontClasses = {
-    sm: charCount >= 3 ? 'text-[7.5px] tracking-[-0.06em]' : charCount === 2 ? 'text-[10px] tracking-tighter' : 'text-xs',
-    md: charCount >= 3 ? 'text-[9.5px] tracking-tight' : 'text-xs font-semibold',
-    lg: charCount >= 3 ? 'text-[11.5px] tracking-tight' : 'text-sm font-bold',
-    xl: charCount >= 3 ? 'text-[13.5px] tracking-tight' : 'text-base font-bold',
-  };
-
   return (
     <div
       className={`relative inline-flex items-center justify-center rounded-full overflow-hidden shrink-0 select-none box-border ${
@@ -55,12 +48,25 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
           }}
         />
       ) : (
-        <span
-          style={{ color: textColor }}
-          className={`font-bold leading-none whitespace-nowrap text-center flex items-center justify-center max-w-full px-0.5 ${fontClasses[size]}`}
+        <svg
+          viewBox="0 0 28 28"
+          className="w-full h-full pointer-events-none select-none block"
         >
-          {displayName}
-        </span>
+          <text
+            x="14"
+            y="14"
+            textAnchor="middle"
+            dominantBaseline="central"
+            fill={textColor}
+            fontWeight="bold"
+            fontSize={charCount >= 3 ? '8.5' : charCount === 2 ? '11.5' : '13'}
+            letterSpacing={charCount >= 3 ? '-0.5' : '-0.2'}
+            fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+            {...(charCount >= 3 ? { textLength: 21, lengthAdjust: 'spacingAndGlyphs' } : {})}
+          >
+            {displayName}
+          </text>
+        </svg>
       )}
     </div>
   );

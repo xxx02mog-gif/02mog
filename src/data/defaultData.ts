@@ -78,7 +78,7 @@ export const DEFAULT_PROJECT: MapProject = {
   characters: DEFAULT_CHARACTERS,
 };
 
-// 色相順・多様な彩度・無彩色を含み、1行に収まる厳選11色
+// 色相順・多様な彩度・無彩色を含み、1行に収まる厳選10色（黒丸は非表示）
 export const COLOR_PALETTE = [
   '#e11d48', // ローズ赤
   '#f472b6', // パステルピンク
@@ -90,5 +90,4 @@ export const COLOR_PALETTE = [
   '#3b82f6', // コバルト青
   '#8b5cf6', // バイオレット紫
   '#52525b', // スレートグレー
-  '#18181b', // チャコール黒
 ];
