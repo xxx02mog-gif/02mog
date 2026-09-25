@@ -163,13 +163,14 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
     excludeFromStandardMap,
   };
 
+  const isCustomColor = !COLOR_PALETTE.some((c) => c.toLowerCase() === color.toLowerCase());
   const avgPos = calcAveragePosition(previewChar, axes);
   const posLabel = getPositionLabel(avgPos).label;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-xs overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-xs overflow-y-auto overflow-x-hidden">
       <div
-        className={`relative w-full max-w-lg my-6 rounded-xl border shadow-2xl overflow-hidden flex flex-col max-h-[90vh] ${
+        className={`relative w-full max-w-lg my-auto rounded-xl border shadow-2xl overflow-hidden flex flex-col max-h-[90vh] ${
           isDark
             ? 'bg-zinc-900 border-zinc-700 text-zinc-100'
             : 'bg-white border-stone-300 text-stone-900'
@@ -177,7 +178,7 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
       >
         {/* Header */}
         <div
-          className={`flex items-center justify-between px-5 py-3.5 border-b shrink-0 ${
+          className={`flex items-center justify-between px-4 sm:px-5 py-3 sm:py-3.5 border-b shrink-0 ${
             isDark
               ? 'border-zinc-800 bg-zinc-950/70'
               : 'border-stone-200 bg-stone-50'
@@ -200,14 +201,14 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-5 space-y-5 overflow-y-auto flex-1 text-xs">
+        <form onSubmit={handleSubmit} className="p-3.5 sm:p-5 space-y-4 sm:space-y-5 overflow-y-auto overflow-x-hidden flex-1 text-xs">
           {/* Avatar & Name & Color */}
           <div
-            className={`flex items-center gap-4 pb-4 border-b ${
+            className={`flex items-start gap-3 sm:gap-4 pb-4 border-b ${
               isDark ? 'border-zinc-800' : 'border-stone-200'
             }`}
           >
-            <div className="flex flex-col items-center gap-1.5 shrink-0">
+            <div className="flex flex-col items-center gap-1.5 shrink-0 pt-0.5">
               <CharacterAvatar character={previewChar} size="lg" />
               <div className="flex items-center gap-1">
                 <button
@@ -253,9 +254,9 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
               />
             </div>
 
-            <div className="flex-1 space-y-2.5">
+            <div className="flex-1 min-w-0 space-y-2.5">
               <div className="grid grid-cols-3 gap-2">
-                <div className="col-span-2">
+                <div className="col-span-2 min-w-0">
                   <label
                     className={`block text-[11px] font-semibold mb-1 ${
                       isDark ? 'text-zinc-300' : 'text-stone-700'
@@ -269,7 +270,7 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
                     onChange={(e) => handleNameChange(e.target.value)}
                     placeholder="例: サンプル１"
                     required
-                    className={`w-full px-3 py-1.5 rounded border focus:outline-hidden focus:border-indigo-500 text-xs font-bold ${
+                    className={`w-full min-w-0 px-2.5 sm:px-3 py-1.5 rounded border focus:outline-hidden focus:border-indigo-500 text-xs font-bold ${
                       isDark
                         ? 'bg-zinc-950 border-zinc-700 text-zinc-100 placeholder-zinc-600'
                         : 'bg-stone-50 border-stone-300 text-stone-900 placeholder-stone-400'
@@ -277,9 +278,9 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
                   />
                 </div>
 
-                <div>
+                <div className="min-w-0">
                   <label
-                    className={`block text-[11px] font-semibold mb-1 ${
+                    className={`block text-[11px] font-semibold mb-1 truncate ${
                       isDark ? 'text-zinc-300' : 'text-stone-700'
                     }`}
                     title="カプ名の2文字（例: サ１）。未入力なら名前の上2文字を使用"
@@ -292,7 +293,7 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
                     onChange={(e) => handleShortNameChange(e.target.value)}
                     placeholder="サ１"
                     maxLength={4}
-                    className={`w-full px-2 py-1.5 rounded border focus:outline-hidden focus:border-indigo-500 text-xs font-bold text-center ${
+                    className={`w-full min-w-0 px-1.5 sm:px-2 py-1.5 rounded border focus:outline-hidden focus:border-indigo-500 text-xs font-bold text-center ${
                       isDark
                         ? 'bg-zinc-950 border-zinc-700 text-zinc-100 placeholder-zinc-600'
                         : 'bg-stone-50 border-stone-300 text-stone-900 placeholder-stone-400'
@@ -301,7 +302,7 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
                 </div>
               </div>
 
-              <div>
+              <div className="min-w-0">
                 <label
                   className={`block text-[11px] font-semibold mb-1 ${
                     isDark ? 'text-zinc-300' : 'text-stone-700'
@@ -309,26 +310,41 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
                 >
                   テーマカラー
                 </label>
-                <div className="flex items-center gap-1.5 overflow-x-auto py-1">
+                <div className="flex items-center gap-1 sm:gap-1.5 py-1 flex-nowrap overflow-x-hidden">
                   {COLOR_PALETTE.map((c) => (
                     <button
                       key={c}
                       type="button"
                       onClick={() => setColor(c)}
-                      className={`w-5 h-5 rounded-full shrink-0 transition-transform border border-black/15 dark:border-white/20 ${
-                        color.toLowerCase() === c.toLowerCase() ? 'scale-125 ring-2 ring-zinc-400 dark:ring-zinc-500 z-10' : 'hover:scale-110'
+                      className={`w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 rounded-full shrink-0 transition-transform border border-black/15 dark:border-white/20 cursor-pointer ${
+                        color.toLowerCase() === c.toLowerCase()
+                          ? 'scale-125 ring-2 ring-zinc-400 dark:ring-zinc-500 z-10'
+                          : 'hover:scale-110'
                       }`}
                       style={{ backgroundColor: c }}
                       title={c}
                     />
                   ))}
-                  <input
-                    type="color"
-                    value={color}
-                    onChange={(e) => setColor(e.target.value)}
-                    className="w-5 h-5 rounded border bg-transparent cursor-pointer shrink-0 ml-0.5"
+                  <label
+                    className={`relative w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 rounded-full shrink-0 cursor-pointer overflow-hidden border border-black/20 dark:border-white/20 flex items-center justify-center transition-transform ${
+                      isCustomColor
+                        ? 'scale-125 ring-2 ring-zinc-400 dark:ring-zinc-500 z-10'
+                        : 'hover:scale-110'
+                    }`}
+                    style={{
+                      background: isCustomColor
+                        ? color
+                        : 'linear-gradient(135deg, #ef4444, #eab308, #10b981, #3b82f6, #8b5cf6)',
+                    }}
                     title="カスタム色を選択"
-                  />
+                  >
+                    <input
+                      type="color"
+                      value={color}
+                      onChange={(e) => setColor(e.target.value)}
+                      className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+                    />
+                  </label>
                 </div>
               </div>
             </div>

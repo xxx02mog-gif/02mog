@@ -916,6 +916,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <strong className="font-semibold" style={{ color: isDark ? '#fafafa' : '#18181b' }}>⑤ 画像の保存：</strong>
                   右上の「画像出力」からPNG画像のダウンロードやクリップボードへのコピーができます。
                 </p>
+                <p>
+                  <strong className="font-semibold" style={{ color: isDark ? '#fafafa' : '#18181b' }}>⑥ データの保存について：</strong>
+                  入力したデータはご利用中の端末（ブラウザ）内にのみ保存され、外部に送信されることはありません。バックアップや端末間の移行は「バックアップ（JSON出力）」で行えます。
+                </p>
               </div>
             </div>
           </details>
